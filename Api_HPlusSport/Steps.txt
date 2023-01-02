@@ -1,15 +1,15 @@
 ﻿as developing from empty templates:
-controllers/
+ -->controllers/
 	//simple method/route test, gets a string when run
-models/
+-->models/
 	products.cs/
 	categories.cs/
 		properties/
 		relations/
-packages manager/
+-->packages manager/
 	entityframworkcore// for object relational mapping
 	entityframworkcore.inmemory// to be dependant of server
-models/
+-->models/
 	shopcontext.cs/
 		dbcontext// interitance by entityframeworkcore
 		ctor//as injection of dbcontextoptions
@@ -19,16 +19,52 @@ models/
 		//data to seed is defined here
 	shopcontext.cs/
 		modelbuilder.seed//data from extension
-Program.cs/
+-->Program.cs/
 	 add service.adddbcontext/
 	 .UseInMemoryDatabase("Shop")//to not to need for database
 	 .EnableSensitiveDataLogging()//to check seeding error in detail
-productcontroller.cs/
-	getallproduct()//first type of return, get all by ienumerable, converts to json
+-->productcontroller.cs/
 	ctor()/
 		_context/
 		_context.database.ensurecreated()//ensure seeding
-	return products.toarray/
+	getallproducts()//return a list of products ienumerable (an alt could be return action result-below)
+					//.toarray, converts to json by auto
+	getallproducts()//returning a list of products by aciton result
+	getoneproduct()//returning one item-product
+	return NotFound()//unexisting id is requested, if null
+	async action-ing//cahnge method signature, add async Task, await, toArrayAsync 
+	async Post/
+		CreateAtAction//post a product by provided argument is product it self(not id fx)
+						//additions to supercede nullable issue for Category
+-->in scenario where description is required but missing, gets default value instead of 400 error
+	program.cs/
+			addcontrollers().configureapibehaviour()//suppressmodelstateinvalidfilter..
+	async post method/
+			badrequest//return if error message is desired
+			//if not modelstate.isvalid//guarantees getting error message
+-->update/put method
+			//dont miss.. update requires id for put request and in the body (postman)
+			//updateing comes with some issues to handle
+			//lack of id, failed save, already cahnged product etc
+	program.cs/
+			remove suppressmodelinvalidfilter//was previously added
+			idCheck/
+			productCheck/
+			saveAsyncTry/
+			DbUpdateConcurrancyExceptionCatch/
+-->delete/
+		by id//find by id and remove and save cahnges!
+		multiple delete//not httpPost with RouteDelete is used
+						//deleterange is used
+			
+
+					
+	
+												
+
+		
+	
+
 
 	
 
