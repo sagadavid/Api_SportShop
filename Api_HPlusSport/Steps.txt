@@ -55,7 +55,8 @@
 -->delete/
 		by id//find by id and remove and save cahnges!
 		multiple delete//not httpPost with RouteDelete is used
-						//deleterange is used
+						//DeleteRange is used
+						//Post:https://localhost:7175/api/products/delete?ids=1&ids=10
 			
 
 					
