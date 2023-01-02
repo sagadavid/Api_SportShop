@@ -1,0 +1,35 @@
+﻿as developing from empty templates:
+controllers/
+	//simple method/route test, gets a string when run
+models/
+	products.cs/
+	categories.cs/
+		properties/
+		relations/
+packages manager/
+	entityframworkcore// for object relational mapping
+	entityframworkcore.inmemory// to be dependant of server
+models/
+	shopcontext.cs/
+		dbcontext// interitance by entityframeworkcore
+		ctor//as injection of dbcontextoptions
+		dbset//
+		onmodelcreating//modelbuilder to define relation between categories and products
+	extensionsformodelbuilder.cs/
+		//data to seed is defined here
+	shopcontext.cs/
+		modelbuilder.seed//data from extension
+Program.cs/
+	 add service.adddbcontext/
+	 .UseInMemoryDatabase("Shop")//to not to need for database
+	 .EnableSensitiveDataLogging()//to check seeding error in detail
+productcontroller.cs/
+	getallproduct()//first type of return, get all by ienumerable, converts to json
+	ctor()/
+		_context/
+		_context.database.ensurecreated()//ensure seeding
+	return products.toarray/
+
+	
+
+
