@@ -17,17 +17,17 @@ namespace Api_HPlusSport.Models
                 ) ;
             modelBuilder.Entity<Product>().HasData
       (
-          new Product { Id = 1, Sku="asdaf", Name = "aswertrefas", Description ="for vinteren", Price = 9, IsAvailable=true, CategoryId=1 },
-          new Product { Id = 2, Sku = "asd", Name = "asdfasd", Description = "for sdfgd", Price = 9, IsAvailable = true, CategoryId = 1 },
-          new Product { Id = 3, Sku = "dfgfds", Name = "asdfasdf", Description = "for sdfgsd", Price = 9, IsAvailable = true, CategoryId = 2 },
-          new Product { Id = 4, Sku = "dsgsd", Name = "afdsaf", Description = "for cvbvxb", Price = 9, IsAvailable = true, CategoryId = 3 },
-          new Product { Id = 5, Sku = "dfgfd", Name = "xzvzxc", Description = "for dghdfg", Price = 9, IsAvailable = true, CategoryId = 4 },
-          new Product { Id = 6, Sku = "sdgf", Name = "sdafsad", Description = "for vintghdfgeren", Price = 9, IsAvailable = true, CategoryId = 4 },
-          new Product { Id = 7, Sku = "sdfgs", Name = "retwret", Description = "for dfghdgf", Price = 9, IsAvailable = true, CategoryId = 3 },
-          new Product { Id = 8, Sku = "wert", Name = "sdgfdg", Description = "for fdghgfd", Price = 9, IsAvailable = true, CategoryId = 2 },
-          new Product { Id = 9, Sku = "trdhg", Name = "barntwertakler", Description = "for dfgh", Price = 9, IsAvailable = true, CategoryId = 1 },
-          new Product { Id = 10, Sku = "wertre", Name = "fgdfd", Description = "for dfgh", Price = 9, IsAvailable = true, CategoryId = 2 },
-          new Product { Id = 11, Sku = "dfsgs", Name = "barfgsgsdnakler", Description = "for dfghgdf", Price = 9, IsAvailable = true, CategoryId = 3 }
+          new Product { Id = 1, Sku= "summer", Name = "qwertyuiop", Description ="for vinteren", Price = 9, IsAvailable=true, CategoryId=1 },
+          new Product { Id = 2, Sku = "summer", Name = "asdfghj", Description = "for sdfgd", Price = 92, IsAvailable = true, CategoryId = 1 },
+          new Product { Id = 3, Sku = "fjell", Name = "dfghjkl", Description = "for sdfgsd", Price = 29, IsAvailable = false, CategoryId = 2 },
+          new Product { Id = 4, Sku = "spring", Name = "zxcvbn", Description = "for cvbvxb", Price = 94, IsAvailable = true, CategoryId = 3 },
+          new Product { Id = 5, Sku = "fall", Name = "vbnm,.", Description = "for dghdfg", Price = 59, IsAvailable = true, CategoryId = 4 },
+          new Product { Id = 6, Sku = "fjell", Name = "fghjkl;", Description = "for vintghdfgeren", Price = 49, IsAvailable = true, CategoryId = 4 },
+          new Product { Id = 7, Sku = "summer", Name = "rtyuio", Description = "for dfghdgf", Price = 95, IsAvailable = true, CategoryId = 3 },
+          new Product { Id = 8, Sku = "cloth", Name = "uiop[", Description = "for fdghgfd", Price = 39, IsAvailable = true, CategoryId = 2 },
+          new Product { Id = 9, Sku = "summer", Name = "qwertyuhjk", Description = "for dfgh", Price = 19, IsAvailable = false, CategoryId = 1 },
+          new Product { Id = 10, Sku = "fjell", Name = "fgdqwertasdffd", Description = "for dfgh", Price = 79, IsAvailable = true, CategoryId = 2 },
+          new Product { Id = 11, Sku = "spring", Name = "zxcvbasdf", Description = "for dfghgdf", Price = 33, IsAvailable = false, CategoryId = 3 }
 
           );
         }

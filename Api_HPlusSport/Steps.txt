@@ -16,33 +16,34 @@
 		dbset//
 		onmodelcreating//modelbuilder to define relation between categories and products
 	extensionsformodelbuilder.cs/
-		//data to seed is defined here
+			//data to seed is defined here
 	shopcontext.cs/
-		modelbuilder.seed//data from extension
+			modelbuilder.seed//data from extension
 -->Program.cs/
-	 add service.adddbcontext/
-	 .UseInMemoryDatabase("Shop")//to not to need for database
-	 .EnableSensitiveDataLogging()//to check seeding error in detail
+		/add service.adddbcontext/
+		.UseInMemoryDatabase("Shop")//to not to need for database
+		.EnableSensitiveDataLogging()//to check seeding error in detail
 -->productcontroller.cs/
-	ctor()/
-		_context/
-		_context.database.ensurecreated()//ensure seeding
-	getallproducts()//return a list of products ienumerable (an alt could be return action result-below)
-					//.toarray, converts to json by auto
-	getallproducts()//returning a list of products by aciton result
-	getoneproduct()//returning one item-product
-	return NotFound()//unexisting id is requested, if null
-	async action-ing//cahnge method signature, add async Task, await, toArrayAsync 
-	async Post/
-		CreateAtAction//post a product by provided argument is product it self(not id fx)
+		ctor()/
+			_context/
+			_context.database.ensurecreated()//ensure seeding
+		getallproducts()//return a list of products ienumerable (an alt could be return action result-below)
+						//.toarray, converts to json by auto
+		getallproducts()//returning a list of products by aciton result
+		getoneproduct()//returning one item-product
+			return NotFound()//unexisting id is requested, if null
+		async action-ing//cahnge method signature, add async Task, await, toArrayAsync 
+		async Post/
+			CreateAtAction//post a product by provided argument is product it self(not id fx)
 						//additions to supercede nullable issue for Category
--->in scenario where description is required but missing, gets default value instead of 400 error
+-->in scenario
+				/where description is required but missing, gets default value instead of 400 error
 	program.cs/
 			addcontrollers().configureapibehaviour()//suppressmodelstateinvalidfilter..
 	async post method/
 			badrequest//return if error message is desired
 			//if not modelstate.isvalid//guarantees getting error message
--->update/put method
+-->update data/put method
 			//dont miss.. update requires id for put request and in the body (postman)
 			//updateing comes with some issues to handle
 			//lack of id, failed save, already cahnged product etc
@@ -52,15 +53,42 @@
 			productCheck/
 			saveAsyncTry/
 			DbUpdateConcurrancyExceptionCatch/
--->delete/
+-->delete data/
 		by id//find by id and remove and save cahnges!
 		multiple delete//not httpPost with RouteDelete is used
-						//DeleteRange is used
-						//Post:https://localhost:7175/api/products/delete?ids=1&ids=10
-			
-
-					
-	
+						/DeleteRange is used
+						//sample query on Postman-->POST:https://localhost:7175/api/products/delete?ids=1&ids=10
+-->paginating the result//is to be able to ask result in certain page(s).. show some, not all of it!
+			queryParameters.cs/
+					//means page and page size defined
+			productscontroller.cs/GetAllProducts()
+					/gather products under an IQueryableList
+					/skip() to hopp over pages until asked page
+					/take() to take only asked page
+					//sample query on postman--> GET:https://localhost:7175/api/products?size=4
+					//sample query on postman--> GET:https://localhost:7175/api/products?size=4&page=3
+-->filtering the result//limit with ruleset
+				/parameter class
+				/where clause
+				/controller.. getallproducts/update parameter
+				/controller.. getallproducts/wherecheck to filter parameters
+				//sample query on postman--> GET:https://localhost:7175/api/products?maxprice=70
+				//sample query on postman--> GET:https://localhost:7175/api/products?maxprice=70&minprice=50
+-->searching the result/
+				/productqueryparameters.cs//add search parameters
+				/controller/getallproducts()/where check to search parameters
+				//sample query on postman--> GET:https://localhost:7175/api/products?minprice=30&sku=summer
+				//sample query on postman--> GET:https://localhost:7175/api/products?sku=summer&name=ty
+-->sorting the result/
+				/iquaryableextension class with asc/desc code is created//hardcoding here!
+				/lambda expression to set criteria.//Lambda expressions in C# are used like anonymous functions, 
+													with the difference that in Lambda expressions you don't need to 
+													specify the type of the value that you input thus making it more 
+													flexible to use. The '=>' is the lambda operator which is used 
+													in all lambda expressions.
+				/sorting properties added to queryparameters.cs
+				//sample query on postman--> GET:https://localhost:7175/api/products?sortby=Price&sortOrder=desc
+				//above, price is capital to match with property name
 												
 
 		

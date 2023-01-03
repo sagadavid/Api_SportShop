@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Pipes;
 
 namespace Api_HPlusSport.Controllers
 {
@@ -36,13 +37,69 @@ namespace Api_HPlusSport.Controllers
         //public IEnumerable<Product> GetNumerableProducts()
         //{ return _shopContext.Products.ToArray(); }
 
-        [HttpGet]//version 2
-        public async Task<ActionResult> GetActionResultProducts()//returns status code 200 and in payload returns data in json
+        //[HttpGet]//version 2
+        //public async Task<ActionResult> GetAllProductsPaginated()//returns status code 200 and in payload returns data in json
+        //{
+        //    //var products = _shopContext.Products.ToList();
+        //    //return Ok(products);
+        //    //return Ok(_shopContext.Products.ToArray());
+        //    return Ok(await _shopContext.Products.ToArrayAsync());//ment to get all products
+        //}
+
+        [HttpGet]
+    public async Task<ActionResult> GetAllProductsPaginated
+             //([FromQuery]QueryParameters queryParameters)
+             ([FromQuery] ProductQueryParameters queryParameters)
         {
-            //var products = _shopContext.Products.ToList();
-            //return Ok(products);
-            //return Ok(_shopContext.Products.ToArray());
-            return Ok(await _shopContext.Products.ToArrayAsync());
+           IQueryable<Product> products=_shopContext.Products;
+            
+            //filtering query
+            //products due to minprice
+            if (queryParameters.MinPrice != null) 
+            {
+             products = products.Where(
+                    p => p.Price >= queryParameters.MinPrice.Value);//notice .value.. can compare value but not decimal or other data type
+            }
+            //filter products due to maxprice 
+            if (queryParameters.MaxPrice != null) 
+            {
+             products = products.Where(
+                    p => p.Price <= queryParameters.MaxPrice.Value);
+            }
+
+            //searching sku as exact spelling
+            if (!string.IsNullOrEmpty(queryParameters.Sku))
+            {
+             products= products.Where(
+                    p => p.Sku == queryParameters.Sku);
+            }
+
+            //search name as contains
+            if (!string.IsNullOrEmpty(queryParameters.Name))
+            { 
+            products=products.Where(
+                p=>p.Name.ToLower().Contains(queryParameters.Name.ToLower()));
+            }
+
+            //sorting results
+            if (!string.IsNullOrEmpty(queryParameters.SortBy))
+            {
+                //match any property of the product with queryparameter sortby property (we predefined as "ID") as sorting criteria !!
+                //getproperty searched for the puclic property with the specified name
+                if (typeof(Product).GetProperty(queryParameters.SortBy) != null)
+                {
+                    products = products.OrderByCustom(//depends on extension class
+                        queryParameters.SortBy,
+                        queryParameters.SortOrder);
+                }
+            }
+
+            //pagination query
+            var paginatedProducts = products
+                .Skip(queryParameters.Size * (queryParameters.Page - 1))
+                .Take(queryParameters.Size);
+            return Ok(await paginatedProducts.ToArrayAsync());
+
         }
 
         [HttpGet("{id}")]//version 3
@@ -141,7 +198,8 @@ namespace Api_HPlusSport.Controllers
                 if (product == null) { return NotFound(); }
                 productsToDelete.Add(product);
             }
-            //pinpoint here is praparing a list for removeRange method of entityframework
+            //pinpoint is praparing a list for removeRange method of entityframework
+            //query input is typed on address bar as this: //Post(on postman):https://localhost:7175/api/products/delete?ids=1&ids=10
             _shopContext.Products.RemoveRange(productsToDelete);
             await _shopContext.SaveChangesAsync();
 
