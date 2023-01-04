@@ -6,15 +6,24 @@ using System.IO.Pipes;
 
 namespace Api_HPlusSport.Controllers
 {
-    [Route("api/[controller]")]//controller is mapped in route,
-                               //so the name of the method will determine to which action will be taken
+    [ApiVersion("1.0")]
+    //controller is mapped in route,
+    //so the name of the method will determine to which action will be taken
+    //[Route("api/[controller]")]
+
+    //versioning by url
+    //[Route("v{v:apiVersion}/products")]//chose product not controller to show 2 versions                   
+
+    //versionin by http header
+    [Route("products")]
+
     [ApiController]
-    public class ProductsController : ControllerBase
+    //public class ProductsController : ControllerBase
+
+    public class ProductsV1Controller : ControllerBase
     {
-
-
         private readonly ShopContext _shopContext;
-        public ProductsController(ShopContext shopContext)
+        public ProductsV1Controller(ShopContext shopContext)
         {
             _shopContext = shopContext;
             _shopContext.Database.EnsureCreated();
@@ -219,4 +228,158 @@ namespace Api_HPlusSport.Controllers
         }
 
     }
+    /*******************
+     * only new aspect are commented in version 2
+     * ************************************************/
+    [ApiVersion("2.0")]
+
+    //versioning by url
+    //[Route("v{v:apiVersion}/products")]                  
+
+    //versionin by http header
+    [Route("products")]
+
+    [ApiController]
+    public class ProductsV2Controller : ControllerBase
+    {
+        private readonly ShopContext _shopContext;
+        public ProductsV2Controller(ShopContext shopContext)
+        {
+            _shopContext = shopContext;
+            _shopContext.Database.EnsureCreated();
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult> GetAllProductsPaginated
+             ([FromQuery] ProductQueryParameters queryParameters)
+        {
+            IQueryable<Product> products = 
+ //show only available products
+                _shopContext.Products.Where(p=>p.IsAvailable==true);
+
+            if (queryParameters.MinPrice != null)
+            {
+                products = products.Where(
+                       p => p.Price >= queryParameters.MinPrice.Value);
+            }
+            if (queryParameters.MaxPrice != null)
+            {
+                products = products.Where(
+                       p => p.Price <= queryParameters.MaxPrice.Value);
+            }
+
+            if (!string.IsNullOrEmpty(queryParameters.SearchTerm))
+            {
+                products = products.Where(
+                    p =>
+                    p.Sku.ToLower().Contains(queryParameters.SearchTerm.ToLower())
+                    ||
+                    p.Name.ToLower().Contains(queryParameters.SearchTerm.ToLower())
+                    );
+            }
+            
+            if (!string.IsNullOrEmpty(queryParameters.Sku))
+            {
+                products = products.Where(
+                       p => p.Sku == queryParameters.Sku);
+            }
+
+            if (!string.IsNullOrEmpty(queryParameters.Name))
+            {
+                products = products.Where(
+                    p => p.Name.ToLower().Contains(queryParameters.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParameters.SortBy))
+            {
+                if (typeof(Product).GetProperty(queryParameters.SortBy) != null)
+                {
+                    products = products.OrderByCustom(//depends on extension class
+                        queryParameters.SortBy,
+                        queryParameters.SortOrder);
+                }
+            }
+
+            var paginatedProducts = products
+                .Skip(queryParameters.Size * (queryParameters.Page - 1))
+                .Take(queryParameters.Size);
+            return Ok(await paginatedProducts.ToArrayAsync());
+
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetActionResultOneProduct(int id)
+        {
+            var product = await _shopContext.Products.FindAsync(id);
+
+            if (product == null) { return NotFound(); }
+            return Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
+        {
+            _shopContext.Products.Add(product);
+            await _shopContext.SaveChangesAsync();
+            return CreatedAtAction(
+                "GetProduct",
+                new { id = product.Id },
+                product
+                );
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutProduct(int id, Product product)
+        {
+            if (id != product.Id) { return BadRequest(); }
+
+            _shopContext.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                await _shopContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_shopContext.Products.Any(p => p.Id == id))
+                { return NotFound(); }
+                else { throw; }
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Product>> DeleteProduct(int id)
+        {
+            var product = await _shopContext.Products.FindAsync(id);
+            if (product == null) { return NotFound(); }
+
+            _shopContext.Products.Remove(product);
+            await _shopContext.SaveChangesAsync();
+
+            return product;
+        }
+
+        [HttpPost]
+        [Route("Delete")]
+        public async Task<ActionResult> DeleteMulitpleProducts([FromQuery] int[] ids)
+        {
+            
+            var productsToDelete = new List<Product>();
+            foreach (var id in ids)
+            {
+                var product = await _shopContext.Products.FindAsync(id);
+                if (product == null) { return NotFound(); }
+                productsToDelete.Add(product);
+            }
+            _shopContext.Products.RemoveRange(productsToDelete);
+            await _shopContext.SaveChangesAsync();
+
+            return Ok(productsToDelete);
+        }
+
+    }
+
+
 }

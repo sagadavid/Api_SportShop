@@ -89,9 +89,32 @@
 				/sorting properties added to queryparameters.cs
 				//sample query on postman--> GET:https://localhost:7175/api/products?sortby=Price&sortOrder=desc
 				//above, price is capital to match with property name
-				/serachterm property and code added for global insensitive search
+				/searchterm property and code added for global insensitive search
 				//sample query on postman--> GET:https://localhost:7175/api/products?searchTerm=vb
-												
+-->versioning/
+		/install nuget package for microsoft.aspnetcore.mvc.versioning
+			//using url
+				program.cs/service.add versioning
+				controller.cs//versioning decorations//[Route("v{v:apiVersion}/products")]
+							//renaming controller class for versioning
+							//sample query postman-->GET:https://localhost:7175/v2.0/products
+		//using http header
+			program.cs/services.add api version reader//define how version naming is//new HeaderApiVersionReader("X-API-Version")
+			controller/versioning decoration//[Route("products")]
+				//sample query for VERSION 1 postman-->GET:https://localhost:7175/products
+				//sample query for VERSION 2 postman-->
+						//GET:https://localhost:7175/products + (go header key+value menu, provide:) X-API-Version 2.0
+		//using query string
+			program.cs/cancel-comment new headerapi reader
+			postman/deselect header key value menu
+			postman/query for api-version=2.0
+			//sample query for VERSION 2 postman--> GET:https://localhost:7175/products?api-version=2.0
+			program.cs//optional//query string version in header versioning, line24
+			//https://localhost:7175/products?qst-api-version=2.0
+	/swagger glitch// to fix swagger
+			nuget/versioning.apiexplorer
+			program.cs/add service addversionedapiexplorer// with options
+				
 
 		
 	
