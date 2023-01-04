@@ -67,8 +67,20 @@ namespace Api_HPlusSport.Controllers
                     p => p.Price <= queryParameters.MaxPrice.Value);
             }
 
+            //search depending on serch term which enable searchin in both sku and name
+            if (!string.IsNullOrEmpty(queryParameters.SearchTerm))
+            {
+                products = products.Where(
+                    p => 
+                    p.Sku.ToLower().Contains(queryParameters.SearchTerm.ToLower())
+                    || 
+                    p.Name.ToLower().Contains(queryParameters.SearchTerm.ToLower())
+                    );
+            
+            }
+
             //searching sku as exact spelling
-            if (!string.IsNullOrEmpty(queryParameters.Sku))
+                if (!string.IsNullOrEmpty(queryParameters.Sku))
             {
              products= products.Where(
                     p => p.Sku == queryParameters.Sku);

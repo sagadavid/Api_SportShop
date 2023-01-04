@@ -89,6 +89,8 @@
 				/sorting properties added to queryparameters.cs
 				//sample query on postman--> GET:https://localhost:7175/api/products?sortby=Price&sortOrder=desc
 				//above, price is capital to match with property name
+				/serachterm property and code added for global insensitive search
+				//sample query on postman--> GET:https://localhost:7175/api/products?searchTerm=vb
 												
 
 		

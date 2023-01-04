@@ -4,6 +4,7 @@ namespace Api_HPlusSport.Models
 {
     public static class IQueryableExtension
     {
+        //iqueryable provides functionality wherein data type is known
         public static IQueryable<TEntity> OrderByCustom<TEntity>
             (this IQueryable<TEntity> items, string sortBy, string sortOrder)
         {
