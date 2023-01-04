@@ -114,8 +114,23 @@
 	/swagger glitch// to fix swagger
 			nuget/versioning.apiexplorer
 			program.cs/add service addversionedapiexplorer// with options
-				
+-->securing api & web app of it/
+		/https redirection
+		/hsts//use on production, strict/enforcing https (for client use)
+				//web app
+		/cors//protection for javascript codes manipulate server
+				/[EnableCors]//per controller
+				/[DisableCors()] 
+			/program.cs//cors enable with a policy !!
+		/core identity//adding to existing project
+				/install code generator
+				/add new scaffold item/add identity/all//so comes login etc security tools!!!
+		/token based authentication/
+		/OAUTH 2.0/
+		/identity server/
 
+				
+			
 		
 	
 

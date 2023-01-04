@@ -20,8 +20,8 @@ builder.Services.AddApiVersioning(options =>
     options.AssumeDefaultVersionWhenUnspecified= true;
 
     //2-versioning with http header:define naming style/usage
-    //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");//commmented for the sake of version 3
-    options.ApiVersionReader = new QueryStringApiVersionReader("qst-api-version");//query string version in header versioning
+    options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");//commmented for the sake of version 3
+    //options.ApiVersionReader = new QueryStringApiVersionReader("qst-api-version");//query string version in header versioning
 
     //3-versioning with query string
     //go up and comment apiversionreader up above !!! 
@@ -45,6 +45,17 @@ builder.Services.AddDbContext<ShopContext>
     .UseInMemoryDatabase("Shop")
     );
 
+//cors1/cautious exception for cors protection!!
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder
+            .WithOrigins("https://localhost:7196")
+            .WithHeaders("X-API-Version");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -53,10 +64,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else { app.UseHsts();}//secures for 30 days on browser/client
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection();//http status 307 issued by redirecting
 
 app.UseAuthorization();
+//cors2
+app.UseCors();//default policy setup above
 
 app.MapControllers();
 
